@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuthStore } from "@/lib/authStore";
+import { ModeToggle } from "./ModeToggle";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard" },
@@ -30,7 +31,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 max-w-7xl items-center justify-between">
         <div className="flex items-center gap-8">
           <Logo />
@@ -69,6 +70,7 @@ export function Header() {
               <Link href="/login">Login</Link>
             </Button>
           )}
+          <ModeToggle />
         </div>
       </div>
     </header>

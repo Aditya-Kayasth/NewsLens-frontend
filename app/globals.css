@@ -1,4 +1,4 @@
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -11,7 +11,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
  
-    /* This is our custom change: Emerald */
+    /* Emerald */
     --primary: 142.1 76.2% 36.3%;
     --primary-foreground: 0 0% 98%;
  
@@ -29,7 +29,7 @@
 
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 142.1 76.2% 36.3%; /* This is also Emerald */
+    --ring: 142.1 76.2% 36.3%; /* Emerald */
  
     --radius: 0.5rem;
   }
@@ -44,7 +44,7 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
  
-    /* This is our custom change: Emerald */
+    /* Emerald */
     --primary: 142.1 76.2% 36.3%;
     --primary-foreground: 0 0% 98%;
  
@@ -62,15 +62,18 @@
  
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 142.1 76.2% 36.3%; /* This is also Emerald */
+    --ring: 142.1 76.2% 36.3%; /* Emerald */
   }
 }
  
 @layer base {
   * {
-    @apply border-border;
+    /* This is the fix: Use the CSS variable directly */
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    /* Use the CSS variables directly */
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }

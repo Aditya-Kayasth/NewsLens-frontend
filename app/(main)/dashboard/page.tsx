@@ -14,10 +14,13 @@ import { BackendArticle } from "@/types";
 // Skeleton Loader
 function BriefingSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {[1, 2, 3].map((i) => (
-        <Card key={i} className="h-96 animate-pulse bg-muted" />
-      ))}
+    <div className="space-y-8">
+      <h2 className="text-2xl font-bold">Your Daily Briefing</h2>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {[1, 2].map((i) => (
+          <Card key={i} className="h-96 animate-pulse bg-muted" />
+        ))}
+      </div>
     </div>
   );
 }

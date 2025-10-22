@@ -5,6 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import Providers from "./providers"; // We will create this component
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -26,10 +27,17 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <Providers>
-          <main>{children}</main>
-          <Toaster position="top-center" richColors />
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <main className="min-h-screen">{children}</main>
+            <Toaster position="top-center" richColors />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
