@@ -1,4 +1,3 @@
-// components/features/onboarding/TopicPicker.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,18 +7,11 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import * as api from "@/lib/api";
 import { useAuthStore } from "@/lib/authStore";
+import { Loader2 } from "lucide-react";
 
 const ALL_TOPICS = [
-  "Technology",
-  "Science",
-  "Music",
-  "Travel",
-  "Sports",
-  "Entertainment",
-  "Business",
-  "World",
-  "Health",
-  "Politics",
+  "Technology", "Science", "Music", "Travel", "Sports",
+  "Entertainment", "Business", "World", "Health", "Politics",
 ];
 
 interface TopicPickerProps {
@@ -36,7 +28,6 @@ export function TopicPicker({
   const router = useRouter();
   const { user, setUser } = useAuthStore();
 
-  // This effect now safely runs when the *stable* prop changes
   useEffect(() => {
     setSelectedTopics(initialTopics);
   }, [initialTopics]);
@@ -76,38 +67,55 @@ export function TopicPicker({
   };
 
   return (
-    <div className="w-full max-w-2xl">
-      {/* THIS DIV CONTAINS *ONLY* THE TOPICS */}
-      <div className="my-6 flex flex-wrap justify-center gap-3">
+    <div className="w-full max-w-4xl mx-auto">
+      {/* Topic Grid */}
+      <div className="my-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         {ALL_TOPICS.map((topic) => {
           const isSelected = selectedTopics.includes(topic);
           return (
-            <button
+            <Button
               key={topic}
+              type="button"
+              variant="outline"
               onClick={() => toggleTopic(topic)}
               className={cn(
-                "rounded-full border px-4 py-2 text-sm font-medium transition-all",
+                "cursor-pointer rounded-lg border px-6 py-4 text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95",
                 isSelected
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-transparent hover:bg-accent"
+                  ? "border-white text-white"
+                  : "border-border text-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
               {topic}
-            </button>
+            </Button>
           );
         })}
       </div>
 
-      {/* THIS IS THE SEPARATE, STYLED <Button> COMPONENT */}
-      {/* This fixes the hydration error and the layout. */}
-      <Button
-        onClick={handleSubmit}
-        disabled={isLoading}
-        className="mt-8 w-full"
-        size="lg"
-      >
-        {isLoading ? "Saving..." : "Save Preferences"}
-      </Button>
+      {/* Save Button */}
+      <div className="mt-12 flex justify-center">
+        <Button
+          type="button"
+          onClick={handleSubmit}
+          disabled={isLoading || selectedTopics.length === 0}
+          size="lg"
+          className={cn(
+            "min-w-[200px] py-6 px-8 rounded-xl font-bold transition-all duration-200 bg-white text-black hover:bg-gray-200 active:scale-95",
+            (isLoading || selectedTopics.length === 0) &&
+              "opacity-50 cursor-not-allowed"
+          )}
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Saving...
+            </span>
+          ) : (
+            `Save Preferences ${
+              selectedTopics.length > 0 ? `(${selectedTopics.length})` : ""
+            }`
+          )}
+        </Button>
+      </div>
     </div>
   );
 }
