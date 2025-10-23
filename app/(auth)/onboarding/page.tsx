@@ -2,14 +2,12 @@
 "use client";
 
 import { TopicPicker } from "@/components/features/onboarding/TopicPicker";
-import { Logo } from "@/components/shared/Logo";
+// We no longer import Logo here
 
 export default function OnboardingPage() {
   return (
     <div className="flex w-full flex-col items-center px-4 text-center">
-      <div className="mb-8">
-        <Logo />
-      </div>
+      {/* The logo from the layout file is now the only one */}
       <h1 className="text-4xl font-bold">Welcome to NewsLens</h1>
       <p className="mt-2 text-lg text-muted-foreground">
         Just one more step to get your personalized feed.

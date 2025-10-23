@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import * as api from "@/lib/api";
 import { useAuthStore } from "@/lib/authStore";
 
+// This is the correct list of topics
 const ALL_TOPICS = [
   "Technology", "Science", "Music", "Travel", "Sports", 
   "Entertainment", "Business", "World", "Health", "Politics",
@@ -72,7 +73,8 @@ export function TopicPicker({ initialTopics = [], onSuccess }: TopicPickerProps)
 
   return (
     <div className="w-full max-w-2xl">
-      <div className="my-6 flex flex-wrap gap-3">
+      {/* This div contains ONLY the topics */}
+      <div className="my-6 flex flex-wrap justify-center gap-3">
         {ALL_TOPICS.map((topic) => {
           const isSelected = selectedTopics.includes(topic);
           return (
@@ -91,10 +93,13 @@ export function TopicPicker({ initialTopics = [], onSuccess }: TopicPickerProps)
           );
         })}
       </div>
+      
+      {/* This is the real, separate button. It is OUTSIDE the topics list. */}
+      {/* This will be styled as your primary (Emerald) button. */}
       <Button 
         onClick={handleSubmit} 
         disabled={isLoading}
-        className="w-full" 
+        className="mt-8 w-full" // Added margin-top to separate it
         size="lg"
       >
         {isLoading ? "Saving..." : "Save Preferences"}
