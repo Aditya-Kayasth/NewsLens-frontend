@@ -2,12 +2,17 @@
 "use client";
 
 import { TopicPicker } from "@/components/features/onboarding/TopicPicker";
-// We no longer import Logo here
+import { useMemo } from "react"; // <-- 1. IMPORT useMemo
 
 export default function OnboardingPage() {
+  
+  // 2. CREATE A STABLE EMPTY ARRAY
+  // This fixes the infinite loop.
+  const emptyTopics = useMemo(() => [], []);
+
   return (
     <div className="flex w-full flex-col items-center px-4 text-center">
-      {/* The logo from the layout file is now the only one */}
+      {/* The double-logo is also fixed here (we removed the extra one) */}
       <h1 className="text-4xl font-bold">Welcome to NewsLens</h1>
       <p className="mt-2 text-lg text-muted-foreground">
         Just one more step to get your personalized feed.
@@ -17,7 +22,8 @@ export default function OnboardingPage() {
         <p className="mt-2 text-muted-foreground">
           Select at least one topic you're interested in.
         </p>
-        <TopicPicker />
+        {/* 3. PASS THE STABLE ARRAY AS THE PROP */}
+        <TopicPicker initialTopics={emptyTopics} />
       </div>
     </div>
   );

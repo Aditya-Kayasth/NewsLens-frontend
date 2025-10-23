@@ -9,10 +9,17 @@ import { cn } from "@/lib/utils";
 import * as api from "@/lib/api";
 import { useAuthStore } from "@/lib/authStore";
 
-// This is the correct list of topics
 const ALL_TOPICS = [
-  "Technology", "Science", "Music", "Travel", "Sports", 
-  "Entertainment", "Business", "World", "Health", "Politics",
+  "Technology",
+  "Science",
+  "Music",
+  "Travel",
+  "Sports",
+  "Entertainment",
+  "Business",
+  "World",
+  "Health",
+  "Politics",
 ];
 
 interface TopicPickerProps {
@@ -20,22 +27,23 @@ interface TopicPickerProps {
   onSuccess?: () => void;
 }
 
-export function TopicPicker({ initialTopics = [], onSuccess }: TopicPickerProps) {
+export function TopicPicker({
+  initialTopics = [],
+  onSuccess,
+}: TopicPickerProps) {
   const [selectedTopics, setSelectedTopics] = useState<string[]>(initialTopics);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { user, setUser } = useAuthStore();
 
-  // Sync state if initialTopics are loaded
+  // This effect now safely runs when the *stable* prop changes
   useEffect(() => {
     setSelectedTopics(initialTopics);
   }, [initialTopics]);
 
   const toggleTopic = (topic: string) => {
     setSelectedTopics((prev) =>
-      prev.includes(topic)
-        ? prev.filter((t) => t !== topic)
-        : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
     );
   };
 
@@ -44,7 +52,6 @@ export function TopicPicker({ initialTopics = [], onSuccess }: TopicPickerProps)
       toast.error("You must be logged in.");
       return;
     }
-
     if (selectedTopics.length === 0) {
       toast.error("Please select at least one topic.");
       return;
@@ -53,16 +60,13 @@ export function TopicPicker({ initialTopics = [], onSuccess }: TopicPickerProps)
     setIsLoading(true);
     try {
       await api.updatePreferences(user.email, selectedTopics);
-      
-      // Update the user in our global state
       setUser({ ...user, preferred_domains: selectedTopics });
-
       toast.success("Preferences Saved!");
 
       if (onSuccess) {
-        onSuccess(); // Used by settings page
+        onSuccess();
       } else {
-        router.push("/dashboard"); // Default for onboarding
+        router.push("/dashboard");
       }
     } catch (error: any) {
       toast.error("Failed to save preferences", { description: error.message });
@@ -73,7 +77,7 @@ export function TopicPicker({ initialTopics = [], onSuccess }: TopicPickerProps)
 
   return (
     <div className="w-full max-w-2xl">
-      {/* This div contains ONLY the topics */}
+      {/* THIS DIV CONTAINS *ONLY* THE TOPICS */}
       <div className="my-6 flex flex-wrap justify-center gap-3">
         {ALL_TOPICS.map((topic) => {
           const isSelected = selectedTopics.includes(topic);
@@ -93,13 +97,13 @@ export function TopicPicker({ initialTopics = [], onSuccess }: TopicPickerProps)
           );
         })}
       </div>
-      
-      {/* This is the real, separate button. It is OUTSIDE the topics list. */}
-      {/* This will be styled as your primary (Emerald) button. */}
-      <Button 
-        onClick={handleSubmit} 
+
+      {/* THIS IS THE SEPARATE, STYLED <Button> COMPONENT */}
+      {/* This fixes the hydration error and the layout. */}
+      <Button
+        onClick={handleSubmit}
         disabled={isLoading}
-        className="mt-8 w-full" // Added margin-top to separate it
+        className="mt-8 w-full"
         size="lg"
       >
         {isLoading ? "Saving..." : "Save Preferences"}
