@@ -95,3 +95,7 @@ export const fetchSummary = (article_url: string): Promise<SummarizeResponse> =>
     body: JSON.stringify({ article_url }),
   });
 };
+
+export function fetchTopHeadlines(page: number): any {
+  throw new Error("Function not implemented.");
+}

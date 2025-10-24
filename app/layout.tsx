@@ -1,42 +1,48 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/theme-provider"; // Ensure this import
+import { Navbar } from "@/components/layout/Navbar";
 import { Toaster } from "@/components/ui/sonner";
-import Providers from "./providers"; // We will create this component
-import { ThemeProvider } from "@/components/theme-provider";
+import  ReactQueryProvider  from "@/app/providers";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
-export const metadata = {
-  title: "NewsLens - Your Focused News",
-  description: "Intelligent news analysis and summarization.",
+export const metadata: Metadata = {
+  title: "NewsLens",
+  description: "Personalized News Aggregator",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          inter.variable
+          fontSans.variable,
         )}
       >
+        {/* ThemeProvider wrapping everything */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Providers>
-            <main className="min-h-screen">{children}</main>
-            <Toaster position="top-center" richColors />
-          </Providers>
+          <ReactQueryProvider>
+            <Navbar />
+            <main className="container py-8">{children}</main>
+            <Toaster richColors />
+          </ReactQueryProvider>
         </ThemeProvider>
       </body>
     </html>

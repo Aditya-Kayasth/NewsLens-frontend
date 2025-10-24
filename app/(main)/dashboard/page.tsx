@@ -8,66 +8,48 @@ import { ArticleCard } from "@/components/shared/ArticleCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArticleSentiment } from "@/components/features/article/ArticleSentiment";
-import { BackendArticle } from "@/types";
+// Removed ArticleSentiment import as it's no longer used here
 
-// Skeleton Loader
+// Skeleton Loader - Now shows 3 cards for full width
 function BriefingSkeleton() {
   return (
     <div className="space-y-8">
       <h2 className="text-2xl font-bold">Your Daily Briefing</h2>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {[1, 2].map((i) => (
-          <Card key={i} className="h-96 animate-pulse bg-muted" />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3].map((i) => (
+           <Card key={i} className="h-[450px] animate-pulse bg-muted" /> // Adjusted height
         ))}
       </div>
     </div>
   );
 }
 
-// Sentiment Snapshot Component (moved inline for simplicity)
-function SentimentSnapshot({ articles }: { articles: BackendArticle[] }) {
-  const validSentiments = articles
-    .map(a => a.sentiment)
-    .filter(s => s !== null) as { raw_polarity: number, raw_subjectivity: number }[];
-
-  if (validSentiments.length === 0) {
-    return <p className="text-muted-foreground">Not enough data for a sentiment snapshot.</p>;
-  }
-
-  const avgPolarity = validSentiments.reduce((acc, s) => acc + s.raw_polarity, 0) / validSentiments.length;
-  const avgSubjectivity = validSentiments.reduce((acc, s) => acc + s.raw_subjectivity, 0) / validSentiments.length;
-
-  const mockSentiment = {
-    raw_polarity: avgPolarity,
-    raw_subjectivity: avgSubjectivity
-  };
-
-  return <ArticleSentiment sentiment={mockSentiment} />;
-}
+// Removed SentimentSnapshot component
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["dashboardNews", user?.email],
-    queryFn: () => api.fetchNews(user!.email!, null, 1),
-    enabled: !!user, // Only run if the user is loaded
+    queryFn: () => api.fetchNews(user!.email!, null, 1), // Fetch page 1 by default
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 
   if (isLoading || !user) {
-    return (
-      <div className="space-y-8">
-        <h2 className="text-2xl font-bold">Your Daily Briefing</h2>
-        <BriefingSkeleton />
-      </div>
-    );
+    return <BriefingSkeleton />; // Show skeleton while loading user or data
   }
 
   if (error) {
-    return <p className="text-rose-500">Error: {(error as Error).message}</p>;
+     return (
+       <div className="space-y-2">
+         <h2 className="text-2xl font-bold">Your Daily Briefing</h2>
+         <p className="text-rose-500">Error fetching your briefing: {(error as Error).message}</p>
+       </div>
+     );
   }
 
+  // Handle case where user has no preferences set yet
   if (user.preferred_domains.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground p-12 text-center">
@@ -82,24 +64,28 @@ export default function DashboardPage() {
     );
   }
 
+  // Handle case where preferences are set but no articles found
   if (!data || data.articles.length === 0) {
-    return <p>No articles found for your preferences.</p>;
+     return (
+       <div className="space-y-2">
+         <h2 className="text-2xl font-bold">Your Daily Briefing</h2>
+         <p>No articles found matching your preferences right now.</p>
+       </div>
+     );
   }
 
+  // Render the main dashboard content
   return (
-    <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
-      <div className="space-y-8 lg:col-span-2">
-        <h2 className="text-2xl font-bold">Your Daily Briefing</h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {data.articles.map((article) => (
-            <ArticleCard key={article.url} article={article} />
-          ))}
-        </div>
+    // REMOVED outer grid, content now takes full width
+    <div className="space-y-8">
+      <h2 className="text-2xl font-bold">Your Daily Briefing</h2>
+      {/* ADJUSTED Grid to be 3 columns on large screens */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {data.articles.map((article) => (
+          <ArticleCard key={article.url} article={article} />
+        ))}
       </div>
-      <aside className="space-y-8 lg:col-span-1">
-        <h2 className="text-2xl font-bold">Sentiment Snapshot</h2>
-        <SentimentSnapshot articles={data.articles} />
-      </aside>
+      {/* You could add pagination here if needed */}
     </div>
   );
 }
