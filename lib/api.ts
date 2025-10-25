@@ -1,4 +1,3 @@
-// lib/api.ts
 import { API_BASE_URL } from "./config";
 import { useAuthStore } from "./authStore";
 import { 
@@ -9,9 +8,8 @@ import {
   BackendUser
 } from "@/types";
 
-// Helper function for all API calls
 async function apiFetch(endpoint: string, options: RequestInit = {}): Promise<any> {
-  const { token } = useAuthStore.getState(); // Get token from Zustand
+  const { token } = useAuthStore.getState();
 
   const defaultHeaders: HeadersInit = {
     'Content-Type': 'application/json',
@@ -80,6 +78,13 @@ export const fetchNews = (email: string, category: string | null, page: number):
   });
 };
 
+export const fetchTopHeadlines = (page: number): Promise<NewsApiResponse> => {
+  return apiFetch('/top-headlines', {
+    method: 'POST',
+    body: JSON.stringify({ page }),
+  });
+};
+
 export const searchNews = (query: string, page: number): Promise<NewsApiResponse> => {
   return apiFetch('/search', {
     method: 'POST',
@@ -95,7 +100,3 @@ export const fetchSummary = (article_url: string): Promise<SummarizeResponse> =>
     body: JSON.stringify({ article_url }),
   });
 };
-
-export function fetchTopHeadlines(page: number): any {
-  throw new Error("Function not implemented.");
-}

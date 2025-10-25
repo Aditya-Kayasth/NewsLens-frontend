@@ -1,4 +1,3 @@
-// app/(auth)/onboarding/page.tsx
 "use client";
 
 import { TopicPicker } from "@/components/features/onboarding/TopicPicker";
@@ -8,31 +7,25 @@ export default function OnboardingPage() {
   const emptyTopics = useMemo(() => [], []);
 
   return (
-    // REVERTED: Removed gradient background
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          {/* REVERTED: Removed gradient text */}
-          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4">
+        <div className="text-center mb-12 space-y-4">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground">
             Welcome to NewsLens
           </h1>
-          {/* REVERTED: Used muted-foreground for consistency */}
-          <p className="text-xl text-muted-foreground">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             One more step to get your personalized news feed
           </p>
         </div>
 
         {/* Topic Selection */}
-        {/* REVERTED: Used card styles, removed custom shadows/borders */}
-        <div className="bg-card text-card-foreground rounded-2xl border p-8 md:p-12">
-          <div className="text-center mb-8">
-            {/* REVERTED: Used foreground text */}
-            <h2 className="text-3xl font-bold text-foreground mb-3">
+        <div className="bg-card text-card-foreground rounded-2xl border shadow-sm p-8 md:p-12">
+          <div className="text-center mb-8 space-y-3">
+            <h2 className="text-3xl font-bold text-foreground">
               Choose Your Interests
             </h2>
-            {/* REVERTED: Used muted-foreground */}
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-lg">
               Select topics you want to stay updated on
             </p>
           </div>

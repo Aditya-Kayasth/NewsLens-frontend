@@ -1,4 +1,3 @@
-// components/layout/Navbar.tsx
 "use client";
 
 import Link from "next/link";
@@ -6,7 +5,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/authStore";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/Logo";
-import { ThemeToggle } from "./ThemeToggle"; // Import ThemeToggle
+import { ThemeToggle } from "./ThemeToggle";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const router = useRouter();
@@ -21,55 +21,57 @@ export function Navbar() {
   const navLinks = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/discover", label: "Discover" },
+    { href: "/search", label: "Search" },
     { href: "/settings", label: "Settings" },
   ];
-
-  const activeLinkClass = "text-primary border-b-2 border-primary";
-  const defaultLinkClass = "text-foreground/60 hover:text-foreground";
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-4 md:flex">
-          {/* Render the Logo directly (it's already a link) */}
           <div className="mr-6 flex items-center space-x-2">
             <Logo />
-            {/* Optionally keep the text next to it, if desired */}
-            {/* <span className="inline-block font-bold">NewsLens</span> */}
           </div>
           {user && (
-            <nav className="flex items-center space-x-6 text-sm font-medium">
+            <nav className="flex items-center space-x-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={
+                  className={cn(
+                    "relative px-4 py-2 rounded-lg text-sm font-medium transition-colors",
                     pathname.startsWith(link.href)
-                      ? activeLinkClass
-                      : defaultLinkClass
-                  }
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  )}
                 >
                   {link.label}
+                  {pathname.startsWith(link.href) && (
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-primary rounded-full" />
+                  )}
                 </Link>
               ))}
             </nav>
           )}
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Search component could go here if you want it in the navbar */}
-          </div>
           <nav className="flex items-center space-x-2">
             {user ? (
               <>
-                <Button variant="ghost" className="hidden sm:inline-flex">
-                  Search...
+                <Button 
+                  variant="ghost" 
+                  className="hidden sm:inline-flex font-medium"
+                >
+                  {user.name}
                 </Button>
-                <Button variant="ghost">{user.email.split("@")[0]}</Button>
-                <Button variant="ghost" onClick={handleLogout}>
+                <Button 
+                  variant="ghost" 
+                  onClick={handleLogout}
+                  className="hover:text-destructive"
+                >
                   Log Out
                 </Button>
-                <ThemeToggle /> {/* Add ThemeToggle here */}
+                <ThemeToggle />
               </>
             ) : (
               <>
@@ -79,7 +81,7 @@ export function Navbar() {
                 <Link href="/signup">
                   <Button>Sign Up</Button>
                 </Link>
-                <ThemeToggle /> {/* Add ThemeToggle here as well */}
+                <ThemeToggle />
               </>
             )}
           </nav>

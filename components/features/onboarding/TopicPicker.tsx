@@ -1,4 +1,3 @@
-// components/features/onboarding/TopicPicker.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,9 +7,8 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import * as api from "@/lib/api";
 import { useAuthStore } from "@/lib/authStore";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
 
-// Clean array with no invisible characters
 const ALL_TOPICS = [
   "Technology", "Science", "Music", "Travel", "Sports",
   "Entertainment", "Business", "World", "Health", "Politics",
@@ -31,12 +29,10 @@ export function TopicPicker({
   const { user, setUser } = useAuthStore();
 
   useEffect(() => {
-    // Only update if the prop actually changes to avoid potential loops
-     if (JSON.stringify(initialTopics) !== JSON.stringify(selectedTopics)) {
-        setSelectedTopics(initialTopics);
-     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialTopics]); // Keep only initialTopics here
+    if (JSON.stringify(initialTopics) !== JSON.stringify(selectedTopics)) {
+      setSelectedTopics(initialTopics);
+    }
+  }, [initialTopics]);
 
   const toggleTopic = (topic: string) => {
     setSelectedTopics((prev) =>
@@ -45,7 +41,6 @@ export function TopicPicker({
   };
 
   const handleSubmit = async () => {
-    // ... (handleSubmit logic remains the same)
     if (!user) {
       toast.error("You must be logged in.");
       return;
@@ -80,17 +75,18 @@ export function TopicPicker({
               type="button"
               onClick={() => toggleTopic(topic)}
               className={cn(
-                "cursor-pointer rounded-lg border px-6 py-4 text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95",
+                "group relative cursor-pointer rounded-xl border-2 px-6 py-5 text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95",
                 isSelected
-                  ? "border-primary bg-primary text-primary-foreground" // Selected: Primary color background, foreground text
-                  // --- THIS IS THE FIX for UNSELECTED state ---
-                  : "border-input bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                  // Use border-input (visible border)
-                  // Use bg-transparent (inherits card background)
-                  // Use text-muted-foreground (visible gray text)
-                  // Standard hover effects
+                  ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-accent hover:shadow-md"
               )}
             >
+              {/* Animated checkmark for selected state */}
+              {isSelected && (
+                <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg animate-in zoom-in duration-200">
+                  <Check className="h-4 w-4" />
+                </span>
+              )}
               {topic}
             </button>
           );
@@ -104,7 +100,7 @@ export function TopicPicker({
           onClick={handleSubmit}
           disabled={isLoading || selectedTopics.length === 0}
           size="lg"
-          className="min-w-[200px] py-6 px-8 rounded-xl font-bold transition-all duration-200"
+          className="min-w-[200px] py-6 px-8 rounded-xl font-bold transition-all duration-200 hover:scale-105"
         >
           {isLoading ? (
             <span className="flex items-center gap-2">
