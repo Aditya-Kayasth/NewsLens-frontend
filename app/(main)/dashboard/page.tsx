@@ -126,9 +126,9 @@ export default function DashboardPage() {
           {data.totalResults} articles curated for you
         </p>
       </div>
-
+      
       <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full place-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl w-full px-4 place-items-center">
           {data.articles.map((article) => (
             <ArticleCard key={article.url} article={article} />
           ))}
