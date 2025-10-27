@@ -10,8 +10,16 @@ import { useAuthStore } from "@/lib/authStore";
 import { Loader2, Check } from "lucide-react";
 
 const ALL_TOPICS = [
-  "Technology", "Science", "Music", "Travel", "Sports",
-  "Entertainment", "Business", "World", "Health", "Politics",
+  "Technology",
+  "Science",
+  "Music",
+  "Travel",
+  "Sports",
+  "Entertainment",
+  "Business",
+  "World",
+  "Health",
+  "Politics",
 ];
 
 interface TopicPickerProps {
@@ -64,7 +72,7 @@ export function TopicPicker({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="flex w-screen mx-auto">
       {/* Topic Grid */}
       <div className="my-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         {ALL_TOPICS.map((topic) => {
@@ -108,7 +116,9 @@ export function TopicPicker({
               Saving...
             </span>
           ) : (
-            `Save Preferences ${selectedTopics.length > 0 ? `(${selectedTopics.length})` : ''}`
+            `Save Preferences ${
+              selectedTopics.length > 0 ? `(${selectedTopics.length})` : ""
+            }`
           )}
         </Button>
       </div>
