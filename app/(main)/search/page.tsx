@@ -44,7 +44,7 @@ export default function SearchPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8 w-screen ali">
+    <div className="space-y-8 pb-8 w-screen">
       {/* Header Section */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
@@ -116,7 +116,7 @@ export default function SearchPage() {
             {data.articles.length > 0 ? (
               <>
                 <div className="flex justify-center">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-screen px-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9 w-screen px-8">
                     {data.articles.map((article) => (
                       <ArticleCard key={article.url} article={article} />
                     ))}
