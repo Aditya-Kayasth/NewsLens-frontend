@@ -117,7 +117,7 @@ export default function DashboardPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8 w-full flex flex-col items-center px-6">
+    <div className="space-y-8 pb-8 w-screen px-6">
       <div className="space-y-2">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
           Your Daily Briefing
@@ -128,7 +128,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl w-full px-4 place-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-screen px-20">
           {data.articles.map((article) => (
             <ArticleCard key={article.url} article={article} />
           ))}
