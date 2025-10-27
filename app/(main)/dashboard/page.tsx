@@ -117,7 +117,7 @@ export default function DashboardPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8 w-full px-6">
+    <div className="space-y-8 pb-8 w-full flex flex-col items-center px-6">
       <div className="space-y-2">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
           Your Daily Briefing
@@ -126,7 +126,7 @@ export default function DashboardPage() {
           {data.totalResults} articles curated for you
         </p>
       </div>
-      
+
       <div className="flex justify-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl w-full px-4 place-items-center">
           {data.articles.map((article) => (
