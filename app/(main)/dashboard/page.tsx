@@ -118,7 +118,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8 pb-8 w-screen px-6">
-      <div className="space-y-2">
+      <div className="space-y-2 px-4">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
           Your Daily Briefing
         </h2>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-screen px-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-screen px-14">
           {data.articles.map((article) => (
             <ArticleCard key={article.url} article={article} />
           ))}
