@@ -59,14 +59,14 @@ export function Navbar() {
               <>
                 <Button 
                   variant="ghost" 
-                  className="hidden sm:inline-flex font-medium "
+                  className="hidden sm:inline-flex font-medium cursor-pointer"
                 >
                   {user.name}
                 </Button>
                 <Button 
                   variant="ghost" 
                   onClick={handleLogout}
-                  className="hover:text-destructive"
+                  className="hover:text-destructive cursor-pointer"
                 >
                   Log Out
                 </Button>

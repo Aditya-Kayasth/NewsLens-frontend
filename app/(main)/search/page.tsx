@@ -44,18 +44,23 @@ export default function SearchPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-8 pb-8 w-screen ali">
       {/* Header Section */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Search News</h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+            Search News
+          </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
             Find articles on any topic that interests you
           </p>
         </div>
-        
+
         {/* Search Form */}
-        <form onSubmit={handleSubmit} className="flex w-full max-w-2xl mx-auto gap-2">
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full max-w-2xl mx-auto gap-2"
+        >
           <Input
             type="text"
             placeholder="Search for topics, e.g., 'Artificial Intelligence'"
@@ -82,8 +87,12 @@ export default function SearchPage() {
         {error && (
           <div className="flex items-center justify-center min-h-[400px]">
             <Card className="p-8 max-w-md text-center">
-              <p className="text-destructive font-medium mb-2">Error searching articles</p>
-              <p className="text-sm text-muted-foreground">{(error as Error).message}</p>
+              <p className="text-destructive font-medium mb-2">
+                Error searching articles
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {(error as Error).message}
+              </p>
             </Card>
           </div>
         )}
@@ -92,17 +101,26 @@ export default function SearchPage() {
           <>
             <div className="mb-6">
               <p className="text-muted-foreground text-center">
-                Found <span className="font-semibold text-foreground">{data.totalResults}</span> results for "
-                <span className="font-semibold text-foreground">{submittedQuery}</span>"
+                Found{" "}
+                <span className="font-semibold text-foreground">
+                  {data.totalResults}
+                </span>{" "}
+                results for "
+                <span className="font-semibold text-foreground">
+                  {submittedQuery}
+                </span>
+                "
               </p>
             </div>
 
             {data.articles.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {data.articles.map((article) => (
-                    <ArticleCard key={article.url} article={article} />
-                  ))}
+                <div className="flex justify-center">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-screen px-8">
+                    {data.articles.map((article) => (
+                      <ArticleCard key={article.url} article={article} />
+                    ))}
+                  </div>
                 </div>
 
                 {/* Pagination */}
@@ -118,7 +136,7 @@ export default function SearchPage() {
                       <ChevronLeft className="h-4 w-4" />
                       Previous
                     </Button>
-                    
+
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">
                         Page {page} of {totalPages}
@@ -141,7 +159,8 @@ export default function SearchPage() {
               <div className="flex items-center justify-center min-h-[400px]">
                 <Card className="p-8 max-w-md text-center">
                   <p className="text-muted-foreground">
-                    No articles found for "<span className="font-semibold">{submittedQuery}</span>". 
+                    No articles found for "
+                    <span className="font-semibold">{submittedQuery}</span>".
                     Try a different search term.
                   </p>
                 </Card>
