@@ -1,4 +1,3 @@
-// app/(auth)/signup/page.tsx
 "use client";
 
 import Link from "next/link";
@@ -18,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import * as api from "@/lib/api";
 import { useAuthStore } from "@/lib/authStore";
+import { Loader2 } from "lucide-react";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -32,15 +32,12 @@ export default function SignupPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      // 1. Create the account
       await api.signupUser(name, email, password, location);
       toast.success("Account created!");
 
-      // 2. Automatically log them in
       const data = await api.loginUser(email, password);
       login(data.token, data.user);
       
-      // 3. Send to onboarding
       router.push("/onboarding");
     } catch (error: any) {
       toast.error("Signup Failed", { description: error.message });
@@ -49,69 +46,82 @@ export default function SignupPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm">
-      <form onSubmit={handleSubmit}>
-        <CardHeader>
-          <CardTitle className="text-2xl">Sign Up</CardTitle>
-          <CardDescription>
-            Create your account to get started.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input 
-              id="name" 
-              placeholder="Your Name" 
-              required 
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              required 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-           <div className="grid gap-2">
-            <Label htmlFor="location">Location</Label>
-            <Input 
-              id="location" 
-              placeholder="e.g., India" 
-              required 
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col">
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating Account..." : "Create Account"}
-          </Button>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/login" className="underline hover:text-primary">
-              Log in
-            </Link>
-          </p>
-        </CardFooter>
-      </form>
-    </Card>
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
+      <Card className="w-full max-w-md">
+        <form onSubmit={handleSubmit}>
+          <CardHeader className="space-y-2 text-center">
+            <CardTitle className="text-2xl md:text-3xl">Create Account</CardTitle>
+            <CardDescription className="text-base">
+              Join NewsLens to get personalized news updates
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name</Label>
+              <Input 
+                id="name" 
+                placeholder="Your Name" 
+                required 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input 
+                id="password" 
+                type="password" 
+                required 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="location">Location</Label>
+              <Input 
+                id="location" 
+                placeholder="e.g., India" 
+                required 
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                "Create Account"
+              )}
+            </Button>
+            <p className="text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link href="/login" className="underline hover:text-primary font-medium">
+                Log in
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+    </div>
   );
-}
+} 

@@ -20,7 +20,6 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/dashboard", label: "Dashboard" },
-    { href: "/discover", label: "Discover" },
     { href: "/search", label: "Search" },
     { href: "/settings", label: "Settings" },
   ];
