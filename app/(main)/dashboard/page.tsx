@@ -50,7 +50,9 @@ export default function DashboardPage() {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
         <div className="space-y-4 max-w-lg text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Your Daily Briefing</h2>
+          <h2 className="text-3xl font-bold tracking-tight">
+            Your Daily Briefing
+          </h2>
           <Card className="p-8 border-destructive/50">
             <p className="text-destructive">
               Error fetching your briefing: {(error as Error).message}
@@ -68,9 +70,12 @@ export default function DashboardPage() {
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 mb-6">
             <Glasses className="h-10 w-10 text-primary" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">Welcome to NewsLens!</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">
+            Welcome to NewsLens!
+          </h2>
           <p className="text-muted-foreground max-w-sm mb-8 text-base md:text-lg">
-            Let's personalize your news feed. Select topics you're interested in to get started.
+            Let's personalize your news feed. Select topics you're interested in
+            to get started.
           </p>
           <Button asChild size="lg" className="gap-2">
             <Link href="/settings">
@@ -87,10 +92,13 @@ export default function DashboardPage() {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
         <div className="space-y-4 max-w-lg text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Your Daily Briefing</h2>
+          <h2 className="text-3xl font-bold tracking-tight">
+            Your Daily Briefing
+          </h2>
           <Card className="p-8 text-center">
             <p className="text-muted-foreground">
-              No articles found matching your preferences right now. Try adjusting your interests in settings.
+              No articles found matching your preferences right now. Try
+              adjusting your interests in settings.
             </p>
             <Button asChild className="mt-4" variant="outline">
               <Link href="/settings">
@@ -111,16 +119,20 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 pb-8 w-full px-6">
       <div className="space-y-2">
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Your Daily Briefing</h2>
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+          Your Daily Briefing
+        </h2>
         <p className="text-muted-foreground text-base md:text-lg">
           {data.totalResults} articles curated for you
         </p>
       </div>
-      
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {data.articles.map((article) => (
-          <ArticleCard key={article.url} article={article} />
-        ))}
+
+      <div className="flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl w-full place-items-center">
+          {data.articles.map((article) => (
+            <ArticleCard key={article.url} article={article} />
+          ))}
+        </div>
       </div>
 
       {/* Pagination */}
@@ -136,7 +148,7 @@ export default function DashboardPage() {
             <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">
               Page {page} of {totalPages}

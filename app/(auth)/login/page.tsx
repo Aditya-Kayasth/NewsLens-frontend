@@ -41,7 +41,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center w-full py-12">
+    <div className="min-h-[calc(85vh-4rem)] w-screen flex items-center justify-center py-2">
       <Card className="w-full max-w-md">
         <form onSubmit={handleSubmit}>
           <CardHeader className="space-y-2 text-center">
@@ -72,6 +72,7 @@ export default function LoginPage() {
                 type="password"
                 required
                 value={password}
+                placeholder="Keep it simple"
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
               />

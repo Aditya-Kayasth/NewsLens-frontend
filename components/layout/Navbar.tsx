@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/authStore";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/Logo";
-import { ThemeToggle } from "./ThemeToggle";
+import  ThemeToggle from "./ThemeToggle"
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -25,7 +25,7 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full px-14  border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full px-16 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-4 md:flex">
           <div className="mr-6 flex items-center space-x-2">
@@ -59,7 +59,7 @@ export function Navbar() {
               <>
                 <Button 
                   variant="ghost" 
-                  className="hidden sm:inline-flex font-medium"
+                  className="hidden sm:inline-flex font-medium "
                 >
                   {user.name}
                 </Button>
@@ -74,11 +74,11 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Link href="/login">
-                  <Button variant="ghost">Login</Button>
+                <Link href="/login" className="">
+                  <Button variant="ghost" className="cursor-pointer">Login</Button>
                 </Link>
                 <Link href="/signup">
-                  <Button>Sign Up</Button>
+                  <Button className="cursor-pointer">Sign Up</Button>
                 </Link>
                 <ThemeToggle />
               </>

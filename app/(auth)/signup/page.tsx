@@ -46,7 +46,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
+    <div className="min-h-[calc(80vh-4rem)] flex items-center justify-center w-screen py-8">
       <Card className="w-full max-w-md">
         <form onSubmit={handleSubmit}>
           <CardHeader className="space-y-2 text-center">
@@ -90,6 +90,7 @@ export default function SignupPage() {
                 type="password" 
                 required 
                 value={password}
+                placeholder="Keep it simple"
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
               />
@@ -106,8 +107,8 @@ export default function SignupPage() {
               />
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+          <CardFooter className="flex flex-col gap-4 py-4">
+            <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -119,7 +120,7 @@ export default function SignupPage() {
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Link href="/login" className="underline hover:text-primary font-medium">
+              <Link href="/login" className="cursor-pointer underline hover:text-primary font-medium">
                 Log in
               </Link>
             </p>

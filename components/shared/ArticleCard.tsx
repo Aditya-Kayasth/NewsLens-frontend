@@ -107,26 +107,26 @@ export function ArticleCard({ article }: ArticleCardProps) {
       </CardFooter>
 
       {/* Action Buttons */}
-      <CardFooter className="flex flex-col gap-2 pt-4 mt-0">
-        <div className="flex gap-2 w-full">
-          <Button
-            onClick={handleViewDescription}
-            variant="secondary"
-            className="flex-1 transition-all hover:scale-105"
-          >
-            Details
-          </Button>
-          <Button
-            onClick={handleViewSummary}
-            variant="outline"
-            className="flex-1 transition-all hover:scale-105"
-          >
-            Summary
-          </Button>
-        </div>
-        <Button asChild className="w-full transition-all hover:scale-105">
+      <CardFooter className="flex justify-between items-center gap-2 pt-4 border-t">
+        <Button
+          onClick={handleViewDescription}
+          variant="secondary"
+          className="flex-1 transition-all hover:scale-105"
+        >
+          Details
+        </Button>
+
+        <Button
+          onClick={handleViewSummary}
+          variant="outline"
+          className="flex-1 transition-all hover:scale-105"
+        >
+          Summary
+        </Button>
+
+        <Button asChild className="flex-1 transition-all hover:scale-105">
           <a href={article.url} target="_blank" rel="noopener noreferrer">
-            Read Full Article
+            Read Full
           </a>
         </Button>
       </CardFooter>
