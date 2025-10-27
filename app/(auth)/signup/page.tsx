@@ -53,6 +53,10 @@ export default function SignupPage() {
             <CardTitle className="text-2xl md:text-3xl">Create Account</CardTitle>
             <CardDescription className="text-base">
               Join NewsLens to get personalized news updates
+              <br/>
+              <br/>
+              
+
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">

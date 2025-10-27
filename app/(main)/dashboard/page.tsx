@@ -109,7 +109,7 @@ export default function DashboardPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-8 pb-8 w-full px-6">
       <div className="space-y-2">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Your Daily Briefing</h2>
         <p className="text-muted-foreground text-base md:text-lg">
