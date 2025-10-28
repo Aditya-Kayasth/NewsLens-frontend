@@ -54,6 +54,14 @@ export function ArticleCard({ article }: ArticleCardProps) {
       ? article.urlToImage
       : "/placeholder-news.jpg";
 
+  const formattedDate = article.publishedAt
+    ? new Date(article.publishedAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
+
   const handleViewDescription = () => {
     setSelectedArticle(article);
     router.push(`/article`);
@@ -65,8 +73,8 @@ export function ArticleCard({ article }: ArticleCardProps) {
   };
 
   return (
+    // --- THIS CLASS (h-full) KEEPS CARDS THE SAME HEIGHT ---
     <Card className="group flex h-full flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-      {/* Enhanced Image Section */}
       <div className="relative h-40 sm:h-48 w-full overflow-hidden">
         <Image
           src={imageUrl}
@@ -79,27 +87,38 @@ export function ArticleCard({ article }: ArticleCardProps) {
             target.src = "/placeholder-news.jpg";
           }}
         />
-        {/* Gradient overlay on hover */}
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
-      <CardHeader className="grow space-y-2 p-4 sm:p-6">
+      <CardHeader className="space-y-2 p-4 sm:p-6">
         <CardTitle className="line-clamp-2 text-base sm:text-lg leading-snug transition-colors duration-200 group-hover:text-primary">
           {article.title}
         </CardTitle>
       </CardHeader>
 
       <CardContent className="p-4 sm:p-6 pt-0">
+        {/* --- THIS CLASS (line-clamp-3) ADDS THE '...' --- */}
         <p className="line-clamp-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
           {article.description || "No description available."}
         </p>
       </CardContent>
 
-      {/* Sentiment Badge */}
+      {/* --- THIS CLASS (mt-auto) ALIGNS FOOTERS TO THE BOTTOM --- */}
       <CardFooter className="mt-auto flex justify-between items-center p-4 sm:pt-4 text-xs border-t">
-        <span className="truncate pr-2 font-medium text-muted-foreground">
-          {article.source.name}
-        </span>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 min-w-0 pr-2">
+          <span
+            className="truncate font-medium text-muted-foreground"
+            title={article.source.name}
+          >
+            {article.source.name}
+          </span>
+          {formattedDate && (
+            <span className="text-muted-foreground text-xs shrink-0">
+              {formattedDate}
+            </span>
+          )}
+        </div>
+
         <Badge
           title={sentiment.label}
           className={`shrink-0 border-none text-white shadow-sm text-xs ${sentiment.className}`}
@@ -108,7 +127,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         </Badge>
       </CardFooter>
 
-      {/* Action Buttons - Stacked on Mobile */}
+      {/* Action Buttons */}
       <CardFooter className="flex flex-col sm:flex-row justify-between items-stretch gap-2 p-4 pt-2 sm:pt-4 border-t">
         <Button
           onClick={handleViewDescription}
@@ -128,8 +147,8 @@ export function ArticleCard({ article }: ArticleCardProps) {
           Summary
         </Button>
 
-        <Button 
-          asChild 
+        <Button
+          asChild
           size="sm"
           className="w-full sm:flex-1 transition-all hover:scale-105 text-xs sm:text-sm"
         >

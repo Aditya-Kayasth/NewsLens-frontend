@@ -1,151 +1,148 @@
+// app/(main)/summarize/page.tsx
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
 import * as api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, List, FileText, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { ExternalLink, List, FileText } from "lucide-react";
 import { useArticleStore } from "@/lib/articleStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Image from "next/image";
 
+// --- MODIFIED SKELETON ---
+// This skeleton now matches the structure of the final page,
+// similar to how your SearchSkeleton matches its page's grid.
 function SummarySkeleton() {
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4">
-      <div className="h-10 w-3/4 animate-shimmer rounded-lg" />
-      <div className="h-64 md:h-96 w-full animate-shimmer rounded-lg" />
-      <Card className="animate-shimmer">
+    <article className="mx-auto max-w-4xl space-y-8">
+      {/* 1. Title Skeleton */}
+      <div className="h-10 md:h-11 w-3/4 animate-pulse rounded-lg bg-muted"></div>
+
+      {/* 2. Image Skeleton */}
+      <div className="relative h-64 md:h-96 w-full animate-pulse rounded-lg bg-muted"></div>
+
+      {/* 3. AI Summary Card Skeleton */}
+      <Card>
         <CardHeader>
-          <div className="h-8 w-48 animate-shimmer rounded-lg" />
+          {/* Card Title Skeleton */}
+          <div className="h-8 md:h-9 w-1/2 animate-pulse rounded-lg bg-muted"></div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            <div className="h-6 w-full animate-shimmer rounded-lg" />
-            <div className="h-6 w-full animate-shimmer rounded-lg" />
-            <div className="h-6 w-5/6 animate-shimmer rounded-lg" />
+          <div className="space-y-3">
+            {/* Summary Text Skeleton */}
+            <div className="h-6 w-full animate-pulse rounded-lg bg-muted"></div>
+            <div className="h-6 w-full animate-pulse rounded-lg bg-muted"></div>
+            <div className="h-6 w-5/6 animate-pulse rounded-lg bg-muted"></div>
           </div>
         </CardContent>
       </Card>
-    </div>
+
+      {/* 4. Button Skeleton */}
+      <div className="h-11 w-full animate-pulse rounded-lg bg-muted"></div>
+
+      {/* 5. Sources Card Skeleton */}
+      <Card>
+        <CardHeader>
+          <div className="h-7 w-1/3 animate-pulse rounded-lg bg-muted"></div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3 pl-5">
+            <div className="h-5 w-3/4 animate-pulse rounded-lg bg-muted"></div>
+            <div className="h-5 w-2/3 animate-pulse rounded-lg bg-muted"></div>
+          </div>
+        </CardContent>
+      </Card>
+    </article>
   );
 }
+// --- END MODIFIED SKELETON ---
 
-export default function SummarizeClientView() {
+export default function SummarizePage() {
+  // 2. GET ARTICLE FROM STORE, NOT URL
   const router = useRouter();
   const article = useArticleStore((state) => state.selectedArticle);
-  const articleUrl = article?.url;
+  const articleUrl = article?.url; // Get URL from the stored article
 
+  // 3. REDIRECT IF STATE IS EMPTY (e.g., page refresh)
   useEffect(() => {
     if (!article) {
       router.replace("/dashboard");
     }
   }, [article, router]);
 
+  // 4. Run the summary query
   const { data, isLoading, error } = useQuery({
     queryKey: ["summarize", articleUrl],
     queryFn: () => api.fetchSummary(articleUrl!),
     enabled: !!articleUrl,
   });
 
+  // --- MODIFIED LOADING STATE ---
+  // 5. Show loading state *before* checking for article
+  // This now includes a loading message, just like your SearchPage example.
   if (isLoading || !article) {
     return (
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-8">
+      <div className="space-y-6">
+        <p className="text-center text-muted-foreground text-sm md:text-base">
+          Generating summary...
+        </p>
         <SummarySkeleton />
       </div>
     );
   }
+  // --- END MODIFIED LOADING STATE ---
 
   if (error) {
-    return (
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
-        <Card className="p-8 max-w-lg text-center border-destructive/50">
-          <p className="text-destructive font-medium mb-2">Error generating summary</p>
-          <p className="text-sm text-muted-foreground mb-4">{(error as Error).message}</p>
-          <Button variant="outline" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Go Back
-          </Button>
-        </Card>
-      </div>
-    );
+    return <p className="text-rose-500">Error: {(error as Error).message}</p>;
   }
 
   if (!data || data.articles.length === 0) {
-    return (
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
-        <Card className="p-8 max-w-lg text-center">
-          <p className="text-muted-foreground mb-4">Could not generate a summary for this article.</p>
-          <Button variant="outline" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Go Back
-          </Button>
-        </Card>
-      </div>
-    );
+    return <p>Could not generate a summary for this article.</p>;
   }
 
   const summary = data.articles[0];
-  const imageUrl = article.urlToImage && article.urlToImage.startsWith('http') 
-    ? article.urlToImage 
-    : '/placeholder-news.jpg';
+  const imageUrl =
+    article.urlToImage && article.urlToImage.startsWith("http")
+      ? article.urlToImage
+      : "/placeholder-news.jpg";
 
   return (
-    <article className="mx-auto max-w-4xl space-y-8 px-4 py-8">
-      {/* Back Button */}
-      <Button
-        variant="ghost"
-        onClick={() => router.back()}
-        className="gap-2"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </Button>
-
-      {/* Article Header */}
-      <div className="space-y-6">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight">
-          {article.title}
-        </h1>
-        
-        <div className="relative h-64 md:h-96 lg:h-[500px] w-full overflow-hidden rounded-xl border shadow-lg">
-          <Image
-            src={imageUrl}
-            alt={article.title}
-            fill
-            className="object-cover"
-            priority
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.srcset = '';
-              target.src = '/placeholder-news.jpg';
-            }}
-          />
-        </div>
+    <article className="mx-auto max-w-4xl space-y-8">
+      {/* 6. ADDED ARTICLE DETAILS TO THE SUMMARY PAGE */}
+      <h1 className="text-3xl md:text-4xl font-extrabold leading-tight">
+        {article.title}
+      </h1>
+      <div className="relative h-64 md:h-96 w-full overflow-hidden rounded-lg">
+        <Image
+          src={imageUrl}
+          alt={article.title}
+          layout="fill"
+          objectFit="cover"
+        />
       </div>
 
       {/* AI Summary Card */}
-      <Card className="border-primary/20 shadow-lg">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl md:text-3xl">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <FileText className="h-6 w-6 text-primary" />
-            </div>
+            <FileText className="h-6 w-6" />
             AI-Generated Summary
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <p className="text-base md:text-lg leading-relaxed">{summary.description}</p>
+            <p>{summary.description}</p>
           </div>
         </CardContent>
       </Card>
 
       {/* Read Full Article Button */}
-      <Button asChild size="lg" className="w-full gap-2">
+      <Button asChild size="lg" className="w-full">
         <a href={articleUrl} target="_blank" rel="noopener noreferrer">
-          <ExternalLink className="h-4 w-4" />
-          Read Full Original Article
+          Read Full Original Article <ExternalLink className="ml-2 h-4 w-4" />
         </a>
       </Button>
 
@@ -159,15 +156,14 @@ export default function SummarizeClientView() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3">
-              {summary.info.map((info, index) => (
-                <li key={info.url} className="flex items-start gap-2">
-                  <span className="text-muted-foreground font-medium shrink-0">{index + 1}.</span>
+            <ul className="list-disc space-y-2 pl-5">
+              {summary.info.map((info) => (
+                <li key={info.url}>
                   <a
                     href={info.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary underline hover:opacity-80 transition-opacity wrap-break-word"
+                    className="text-primary underline hover:opacity-80"
                   >
                     {info.title}
                   </a>
