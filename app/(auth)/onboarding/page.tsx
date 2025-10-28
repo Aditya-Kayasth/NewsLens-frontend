@@ -7,25 +7,25 @@ export default function OnboardingPage() {
   const emptyTopics = useMemo(() => [], []);
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
+    <div className="min-h-screen bg-background py-8 md:py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12 space-y-4">
-          <h1 className="text-5xl md:text-6xl font-bold text-foreground">
+        <div className="text-center mb-8 md:mb-12 space-y-3 md:space-y-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground">
             Welcome to NewsLens
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             One more step to get your personalized news feed
           </p>
         </div>
 
         {/* Topic Selection */}
-        <div className="bg-card text-card-foreground rounded-2xl border shadow-sm p-8 md:p-12">
-          <div className="text-center mb-8 space-y-3">
-            <h2 className="text-3xl font-bold text-foreground">
+        <div className="bg-card text-card-foreground rounded-2xl border shadow-sm p-4 sm:p-6 md:p-8 lg:p-12">
+          <div className="text-center mb-6 md:mb-8 space-y-2 md:space-y-3">
+            <h2 className="text-2xl sm:text-2xl md:text-3xl font-bold text-foreground">
               Choose Your Interests
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg">
               Select topics you want to stay updated on
             </p>
           </div>

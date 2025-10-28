@@ -11,9 +11,9 @@ import { SearchIcon, ChevronLeft, ChevronRight } from "lucide-react";
 
 function SearchSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {[...Array(6)].map((_, i) => (
-        <Card key={i} className="h-[500px] animate-shimmer" />
+        <Card key={i} className="h-[450px] md:h-[500px] animate-shimmer" />
       ))}
     </div>
   );
@@ -44,14 +44,14 @@ export default function SearchPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8 w-screen">
+    <div className="space-y-8 pb-8 w-full px-4">
       {/* Header Section */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+          <h1 className="text-2xl md:text-4xl font-bold tracking-tight">
             Search News
           </h1>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">
             Find articles on any topic that interests you
           </p>
         </div>
@@ -59,16 +59,21 @@ export default function SearchPage() {
         {/* Search Form */}
         <form
           onSubmit={handleSubmit}
-          className="flex w-full max-w-2xl mx-auto gap-2"
+          className="flex flex-col sm:flex-row w-full max-w-2xl mx-auto gap-2"
         >
           <Input
             type="text"
-            placeholder="Search for topics, e.g., 'Artificial Intelligence'"
+            placeholder="Search for topics, e.g., 'AI'"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 h-11"
+            className="flex-1 h-10 md:h-11"
           />
-          <Button type="submit" size="lg" disabled={isLoading || !query.trim()}>
+          <Button 
+            type="submit" 
+            size="default" 
+            disabled={isLoading || !query.trim()}
+            className="w-full sm:w-auto"
+          >
             <SearchIcon className="h-4 w-4 mr-2" />
             Search
           </Button>
@@ -79,15 +84,17 @@ export default function SearchPage() {
       <div className="mt-8">
         {isLoading && (
           <div className="space-y-4">
-            <p className="text-center text-muted-foreground">Searching...</p>
+            <p className="text-center text-muted-foreground text-sm md:text-base">
+              Searching...
+            </p>
             <SearchSkeleton />
           </div>
         )}
 
         {error && (
           <div className="flex items-center justify-center min-h-[400px]">
-            <Card className="p-8 max-w-md text-center">
-              <p className="text-destructive font-medium mb-2">
+            <Card className="p-6 md:p-8 max-w-md w-full text-center">
+              <p className="text-destructive font-medium mb-2 text-sm md:text-base">
                 Error searching articles
               </p>
               <p className="text-sm text-muted-foreground">
@@ -100,13 +107,13 @@ export default function SearchPage() {
         {submittedQuery && !isLoading && !error && data && (
           <>
             <div className="mb-6">
-              <p className="text-muted-foreground text-center">
+              <p className="text-muted-foreground text-center text-sm md:text-base">
                 Found{" "}
                 <span className="font-semibold text-foreground">
                   {data.totalResults}
                 </span>{" "}
                 results for "
-                <span className="font-semibold text-foreground">
+                <span className="font-semibold text-foreground wrap-break-word">
                   {submittedQuery}
                 </span>
                 "
@@ -115,30 +122,28 @@ export default function SearchPage() {
 
             {data.articles.length > 0 ? (
               <>
-                <div className="flex justify-center">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9 w-screen px-8">
-                    {data.articles.map((article) => (
-                      <ArticleCard key={article.url} article={article} />
-                    ))}
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {data.articles.map((article) => (
+                    <ArticleCard key={article.url} article={article} />
+                  ))}
                 </div>
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-4 pt-8">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-8">
                     <Button
                       onClick={() => setPage((old) => Math.max(old - 1, 1))}
                       disabled={!hasPrevPage || isPlaceholderData}
                       variant="outline"
-                      size="lg"
-                      className="gap-2"
+                      size="default"
+                      className="gap-2 w-full sm:w-auto"
                     >
                       <ChevronLeft className="h-4 w-4" />
                       Previous
                     </Button>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">
+                      <span className="text-sm font-medium whitespace-nowrap">
                         Page {page} of {totalPages}
                       </span>
                     </div>
@@ -146,8 +151,8 @@ export default function SearchPage() {
                     <Button
                       onClick={() => setPage((old) => old + 1)}
                       disabled={!hasNextPage || isPlaceholderData}
-                      size="lg"
-                      className="gap-2"
+                      size="default"
+                      className="gap-2 w-full sm:w-auto"
                     >
                       Next
                       <ChevronRight className="h-4 w-4" />
@@ -157,10 +162,10 @@ export default function SearchPage() {
               </>
             ) : (
               <div className="flex items-center justify-center min-h-[400px]">
-                <Card className="p-8 max-w-md text-center">
-                  <p className="text-muted-foreground">
+                <Card className="p-6 md:p-8 max-w-md w-full text-center">
+                  <p className="text-muted-foreground text-sm md:text-base">
                     No articles found for "
-                    <span className="font-semibold">{submittedQuery}</span>".
+                    <span className="font-semibold wrap-break-word">{submittedQuery}</span>".
                     Try a different search term.
                   </p>
                 </Card>
@@ -171,9 +176,9 @@ export default function SearchPage() {
 
         {!submittedQuery && !isLoading && (
           <div className="flex items-center justify-center min-h-[400px]">
-            <Card className="p-12 max-w-md text-center">
-              <SearchIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground text-lg">
+            <Card className="p-8 md:p-12 max-w-md w-full text-center">
+              <SearchIcon className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground text-base md:text-lg">
                 Enter a search term to find articles
               </p>
             </Card>

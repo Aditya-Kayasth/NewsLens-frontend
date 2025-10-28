@@ -12,14 +12,14 @@ import { Glasses, Settings, ChevronLeft, ChevronRight } from "lucide-react";
 
 function BriefingSkeleton() {
   return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <div className="h-9 w-64 animate-shimmer rounded-lg" />
-        <div className="h-6 w-48 animate-shimmer rounded-lg" />
+    <div className="space-y-8 w-full">
+      <div className="space-y-2 px-4">
+        <div className="h-9 w-48 md:w-64 animate-shimmer rounded-lg" />
+        <div className="h-6 w-36 md:w-48 animate-shimmer rounded-lg" />
       </div>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-4">
         {[1, 2, 3].map((i) => (
-          <Card key={i} className="h-[500px] animate-shimmer" />
+          <Card key={i} className="h-[450px] md:h-[500px] animate-shimmer" />
         ))}
       </div>
     </div>
@@ -40,7 +40,7 @@ export default function DashboardPage() {
 
   if (isLoading || !user) {
     return (
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
         <BriefingSkeleton />
       </div>
     );
@@ -48,13 +48,13 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="space-y-4 max-w-lg text-center">
-          <h2 className="text-3xl font-bold tracking-tight">
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
+        <div className="space-y-4 max-w-lg w-full text-center">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
             Your Daily Briefing
           </h2>
-          <Card className="p-8 border-destructive/50">
-            <p className="text-destructive">
+          <Card className="p-6 md:p-8 border-destructive/50">
+            <p className="text-destructive text-sm md:text-base">
               Error fetching your briefing: {(error as Error).message}
             </p>
           </Card>
@@ -66,14 +66,14 @@ export default function DashboardPage() {
   if (user.preferred_domains.length === 0) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
-        <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-muted-foreground/25 bg-muted/30 p-12 md:p-16 text-center max-w-2xl w-full">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 mb-6">
-            <Glasses className="h-10 w-10 text-primary" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-muted-foreground/25 bg-muted/30 p-8 md:p-16 text-center max-w-2xl w-full">
+          <div className="mx-auto flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 mb-6">
+            <Glasses className="h-8 w-8 md:h-10 md:w-10 text-primary" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">
+          <h2 className="text-xl md:text-3xl font-bold mb-2">
             Welcome to NewsLens!
           </h2>
-          <p className="text-muted-foreground max-w-sm mb-8 text-base md:text-lg">
+          <p className="text-muted-foreground max-w-sm mb-8 text-sm md:text-lg">
             Let's personalize your news feed. Select topics you're interested in
             to get started.
           </p>
@@ -91,12 +91,12 @@ export default function DashboardPage() {
   if (!data || data.articles.length === 0) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
-        <div className="space-y-4 max-w-lg text-center">
-          <h2 className="text-3xl font-bold tracking-tight">
+        <div className="space-y-4 max-w-lg w-full text-center">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
             Your Daily Briefing
           </h2>
-          <Card className="p-8 text-center">
-            <p className="text-muted-foreground">
+          <Card className="p-6 md:p-8 text-center">
+            <p className="text-muted-foreground text-sm md:text-base">
               No articles found matching your preferences right now. Try
               adjusting your interests in settings.
             </p>
@@ -117,18 +117,18 @@ export default function DashboardPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8 w-screen px-6">
+    <div className="space-y-8 pb-8 w-full">
       <div className="space-y-2 px-4">
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+        <h2 className="text-2xl md:text-4xl font-bold tracking-tight">
           Your Daily Briefing
         </h2>
-        <p className="text-muted-foreground text-base md:text-lg">
+        <p className="text-muted-foreground text-sm md:text-lg">
           {data.totalResults} articles curated for you
         </p>
       </div>
 
-      <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9 w-screen px-6">
+      <div className="w-full px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {data.articles.map((article) => (
             <ArticleCard key={article.url} article={article} />
           ))}
@@ -137,20 +137,20 @@ export default function DashboardPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 pt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4 px-4">
           <Button
             onClick={() => setPage((old) => Math.max(old - 1, 1))}
             disabled={!hasPrevPage || isPlaceholderData}
             variant="outline"
-            size="lg"
-            className="gap-2"
+            size="default"
+            className="gap-2 w-full sm:w-auto"
           >
             <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium whitespace-nowrap">
               Page {page} of {totalPages}
             </span>
           </div>
@@ -158,8 +158,8 @@ export default function DashboardPage() {
           <Button
             onClick={() => setPage((old) => old + 1)}
             disabled={!hasNextPage || isPlaceholderData}
-            size="lg"
-            className="gap-2"
+            size="default"
+            className="gap-2 w-full sm:w-auto"
           >
             Next
             <ChevronRight className="h-4 w-4" />

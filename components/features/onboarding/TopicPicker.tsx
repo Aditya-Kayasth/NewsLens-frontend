@@ -72,9 +72,9 @@ export function TopicPicker({
   };
 
   return (
-    <div className="flex w-screen mx-auto">
+    <div className="w-full mx-auto space-y-8">
       {/* Topic Grid */}
-      <div className="my-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
         {ALL_TOPICS.map((topic) => {
           const isSelected = selectedTopics.includes(topic);
           return (
@@ -83,7 +83,7 @@ export function TopicPicker({
               type="button"
               onClick={() => toggleTopic(topic)}
               className={cn(
-                "group relative cursor-pointer rounded-xl border-2 px-6 py-5 text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95",
+                "group relative cursor-pointer rounded-xl border-2 px-4 py-4 sm:px-6 sm:py-5 text-xs sm:text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95",
                 isSelected
                   ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                   : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-accent hover:shadow-md"
@@ -91,8 +91,8 @@ export function TopicPicker({
             >
               {/* Animated checkmark for selected state */}
               {isSelected && (
-                <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg animate-in zoom-in duration-200">
-                  <Check className="h-4 w-4" />
+                <span className="absolute -right-1 -top-1 sm:-right-2 sm:-top-2 flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg animate-in zoom-in duration-200">
+                  <Check className="h-3 w-3 sm:h-4 sm:w-4" />
                 </span>
               )}
               {topic}
@@ -102,13 +102,13 @@ export function TopicPicker({
       </div>
 
       {/* Save Button */}
-      <div className="mt-12 flex justify-center">
+      <div className="flex justify-center pt-4">
         <Button
           type="button"
           onClick={handleSubmit}
           disabled={isLoading || selectedTopics.length === 0}
           size="lg"
-          className="min-w-[200px] py-6 px-8 rounded-xl font-bold transition-all duration-200 hover:scale-105"
+          className="w-full sm:w-auto sm:min-w-[200px] py-5 sm:py-6 px-6 sm:px-8 rounded-xl font-bold transition-all duration-200 hover:scale-105"
         >
           {isLoading ? (
             <span className="flex items-center gap-2">
