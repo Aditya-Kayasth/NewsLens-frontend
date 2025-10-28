@@ -73,8 +73,8 @@ export function ArticleCard({ article }: ArticleCardProps) {
   };
 
   return (
-    // --- THIS CLASS (h-full) KEEPS CARDS THE SAME HEIGHT ---
     <Card className="group flex h-full flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      {/* Image Section */}
       <div className="relative h-40 sm:h-48 w-full overflow-hidden">
         <Image
           src={imageUrl}
@@ -90,24 +90,25 @@ export function ArticleCard({ article }: ArticleCardProps) {
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
-      <CardHeader className="space-y-2 p-4 sm:p-6">
+      {/* Title Section - grows to push footer down */}
+      <CardHeader className="grow space-y-2 pb-3">
         <CardTitle className="line-clamp-2 text-base sm:text-lg leading-snug transition-colors duration-200 group-hover:text-primary">
           {article.title}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="p-4 sm:p-6 pt-0">
-        {/* --- THIS CLASS (line-clamp-3) ADDS THE '...' --- */}
+      {/* Description Section */}
+      <CardContent className="pb-3 pt-0">
         <p className="line-clamp-3 text-xs sm:text-sm text-muted-foreground leading-relaxed">
           {article.description || "No description available."}
         </p>
       </CardContent>
 
-      {/* --- THIS CLASS (mt-auto) ALIGNS FOOTERS TO THE BOTTOM --- */}
-      <CardFooter className="mt-auto flex justify-between items-center p-4 sm:pt-4 text-xs border-t">
+      {/* Source and Sentiment Badge - at bottom */}
+      <CardFooter className="flex justify-between items-center border-t pt-3 pb-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 min-w-0 pr-2">
           <span
-            className="truncate font-medium text-muted-foreground"
+            className="truncate font-medium text-muted-foreground text-xs"
             title={article.source.name}
           >
             {article.source.name}
@@ -128,7 +129,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
       </CardFooter>
 
       {/* Action Buttons */}
-      <CardFooter className="flex flex-col sm:flex-row justify-between items-stretch gap-2 p-4 pt-2 sm:pt-4 border-t">
+      <CardFooter className="flex flex-col sm:flex-row justify-between items-stretch gap-2 border-t pt-3">
         <Button
           onClick={handleViewDescription}
           variant="secondary"

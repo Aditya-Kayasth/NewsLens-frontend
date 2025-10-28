@@ -1,105 +1,174 @@
-// app/(main)/summarize/page.tsx
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
 import * as api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
-import { ExternalLink, List, FileText } from "lucide-react";
-import { useArticleStore } from "@/lib/articleStore"; // <-- 1. IMPORT
+import { ExternalLink, List, FileText, ArrowLeft, Sparkles } from "lucide-react";
+import { useArticleStore } from "@/lib/articleStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Image from "next/image";
 
 function SummarySkeleton() {
-  // ... (Skeleton code remains the same)
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div className="h-10 w-3/4 animate-pulse rounded-lg bg-muted"></div>
-      <div className="space-y-2">
-        <div className="h-6 w-full animate-pulse rounded-lg bg-muted"></div>
-        <div className="h-6 w-full animate-pulse rounded-lg bg-muted"></div>
-        <div className="h-6 w-5/6 animate-pulse rounded-lg bg-muted"></div>
+    <div className="mx-auto max-w-4xl space-y-8 px-4 py-8">
+      {/* Back button skeleton */}
+      <div className="h-9 w-20 animate-shimmer rounded-md" />
+      
+      {/* Title skeleton */}
+      <div className="space-y-3">
+        <div className="h-10 w-3/4 animate-shimmer rounded-lg" />
+        <div className="h-10 w-full animate-shimmer rounded-lg" />
       </div>
-      <div className="h-10 w-1/4 animate-pulse rounded-lg bg-muted"></div>
+
+      {/* Image skeleton */}
+      <div className="h-64 md:h-96 lg:h-[500px] w-full animate-shimmer rounded-xl" />
+
+      {/* Summary card skeleton */}
+      <Card className="animate-shimmer">
+        <CardHeader>
+          <div className="h-8 w-64 animate-shimmer rounded-lg" />
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="h-6 w-full animate-shimmer rounded-lg" />
+            <div className="h-6 w-full animate-shimmer rounded-lg" />
+            <div className="h-6 w-5/6 animate-shimmer rounded-lg" />
+            <div className="h-6 w-4/6 animate-shimmer rounded-lg" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Loading message */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="flex items-center justify-center gap-3 py-8">
+          <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+          <p className="text-sm md:text-base text-muted-foreground">
+            AI is analyzing the article and generating summary...
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
-export default function SummarizePage() {
-  // 2. GET ARTICLE FROM STORE, NOT URL
+export default function SummarizeClientView() {
   const router = useRouter();
   const article = useArticleStore((state) => state.selectedArticle);
-  const articleUrl = article?.url; // Get URL from the stored article
+  const articleUrl = article?.url;
 
-  // 3. REDIRECT IF STATE IS EMPTY (e.g., page refresh)
   useEffect(() => {
     if (!article) {
       router.replace("/dashboard");
     }
   }, [article, router]);
 
-  // 4. Run the summary query
   const { data, isLoading, error } = useQuery({
     queryKey: ["summarize", articleUrl],
     queryFn: () => api.fetchSummary(articleUrl!),
     enabled: !!articleUrl,
   });
 
-  // 5. Show loading state *before* checking for article
   if (isLoading || !article) {
     return <SummarySkeleton />;
   }
 
   if (error) {
-    return <p className="text-rose-500">Error: {(error as Error).message}</p>;
+    return (
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
+        <Card className="p-6 md:p-8 max-w-lg w-full text-center border-destructive/50">
+          <p className="text-destructive font-medium mb-2 text-sm md:text-base">
+            Error generating summary
+          </p>
+          <p className="text-sm text-muted-foreground mb-4">
+            {(error as Error).message}
+          </p>
+          <Button variant="outline" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Go Back
+          </Button>
+        </Card>
+      </div>
+    );
   }
 
   if (!data || data.articles.length === 0) {
-    return <p>Could not generate a summary for this article.</p>;
+    return (
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
+        <Card className="p-6 md:p-8 max-w-lg w-full text-center">
+          <p className="text-muted-foreground mb-4 text-sm md:text-base">
+            Could not generate a summary for this article.
+          </p>
+          <Button variant="outline" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Go Back
+          </Button>
+        </Card>
+      </div>
+    );
   }
 
   const summary = data.articles[0];
-  const imageUrl = article.urlToImage && article.urlToImage.startsWith('http') 
-    ? article.urlToImage 
-    : '/placeholder-news.jpg';
+  const imageUrl =
+    article.urlToImage && article.urlToImage.startsWith("http")
+      ? article.urlToImage
+      : "/placeholder-news.jpg";
 
   return (
-    <article className="mx-auto max-w-4xl space-y-8">
-      
-      {/* 6. ADDED ARTICLE DETAILS TO THE SUMMARY PAGE */}
-      <h1 className="text-3xl md:text-4xl font-extrabold leading-tight">
-        {article.title}
-      </h1>
-      <div className="relative h-64 md:h-96 w-full overflow-hidden rounded-lg">
-        <Image
-          src={imageUrl}
-          alt={article.title}
-          layout="fill"
-          objectFit="cover"
-        />
+    <article className="mx-auto max-w-4xl space-y-8 px-4 py-8">
+      {/* Back Button */}
+      <Button variant="ghost" onClick={() => router.back()} className="gap-2">
+        <ArrowLeft className="h-4 w-4" />
+        Back
+      </Button>
+
+      {/* Article Header */}
+      <div className="space-y-6">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight">
+          {article.title}
+        </h1>
+
+        <div className="relative h-64 md:h-96 lg:h-[500px] w-full overflow-hidden rounded-xl border shadow-lg">
+          <Image
+            src={imageUrl}
+            alt={article.title}
+            fill
+            className="object-cover"
+            priority
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.srcset = "";
+              target.src = "/placeholder-news.jpg";
+            }}
+          />
+        </div>
       </div>
 
       {/* AI Summary Card */}
-      <Card>
+      <Card className="border-primary/20 shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl md:text-3xl">
-            <FileText className="h-6 w-6" />
+            <div className="p-2 rounded-lg bg-primary/10">
+              <FileText className="h-6 w-6 text-primary" />
+            </div>
             AI-Generated Summary
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <p>{summary.description}</p>
+            <p className="text-base md:text-lg leading-relaxed">
+              {summary.description}
+            </p>
           </div>
         </CardContent>
       </Card>
 
       {/* Read Full Article Button */}
-      <Button asChild size="lg" className="w-full">
+      <Button asChild size="lg" className="w-full gap-2">
         <a href={articleUrl} target="_blank" rel="noopener noreferrer">
-          Read Full Original Article <ExternalLink className="ml-2 h-4 w-4" />
+          <ExternalLink className="h-4 w-4" />
+          Read Full Original Article
         </a>
       </Button>
 
@@ -113,14 +182,17 @@ export default function SummarizePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="list-disc space-y-2 pl-5">
-              {summary.info.map((info) => (
-                <li key={info.url}>
+            <ul className="space-y-3">
+              {summary.info.map((info, index) => (
+                <li key={info.url} className="flex items-start gap-2">
+                  <span className="text-muted-foreground font-medium shrink-0">
+                    {index + 1}.
+                  </span>
                   <a
                     href={info.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary underline hover:opacity-80"
+                    className="text-primary underline hover:opacity-80 transition-opacity wrap-break-word"
                   >
                     {info.title}
                   </a>
