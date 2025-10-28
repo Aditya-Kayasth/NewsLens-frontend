@@ -8,13 +8,19 @@ import { Logo } from "@/components/shared/Logo";
 import ThemeToggle from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout } = useAuthStore();
+  const { user, logout, token } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -28,6 +34,24 @@ export function Navbar() {
     { href: "/settings", label: "Settings" },
   ];
 
+  // Don't show navbar navigation on auth pages
+  const isAuthPage = pathname === "/login" || pathname === "/signup" || pathname === "/onboarding";
+
+  if (!mounted) {
+    return (
+      <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+          <div className="flex items-center">
+            <Logo />
+          </div>
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
@@ -36,8 +60,8 @@ export function Navbar() {
           <Logo />
         </div>
 
-        {/* Desktop Navigation */}
-        {user && (
+        {/* Desktop Navigation - Only show if logged in and not on auth pages */}
+        {user && token && !isAuthPage && (
           <nav className="hidden md:flex items-center space-x-1 mx-auto">
             {navLinks.map((link) => (
               <Link
@@ -61,7 +85,7 @@ export function Navbar() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-2">
-          {user ? (
+          {user && token ? (
             <>
               <Button variant="ghost" className="font-medium cursor-pointer">
                 {user.name}
@@ -90,10 +114,10 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Button - Only show if logged in and not on auth pages */}
         <div className="flex md:hidden items-center space-x-2">
           <ThemeToggle />
-          {user && (
+          {user && token && !isAuthPage && (
             <Button
               variant="ghost"
               size="icon"
@@ -110,8 +134,8 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {user && mobileMenuOpen && (
+      {/* Mobile Menu - Only show if logged in and not on auth pages */}
+      {user && token && !isAuthPage && mobileMenuOpen && (
         <div className="md:hidden border-t bg-background">
           <div className="container mx-auto px-4 py-4 space-y-3">
             {navLinks.map((link) => (
