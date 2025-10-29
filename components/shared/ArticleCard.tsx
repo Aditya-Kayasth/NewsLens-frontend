@@ -62,11 +62,6 @@ export function ArticleCard({ article }: ArticleCardProps) {
       })
     : null;
 
-  const handleViewDescription = () => {
-    setSelectedArticle(article);
-    router.push(`/article`);
-  };
-
   const handleViewSummary = () => {
     setSelectedArticle(article);
     router.push(`/summarize`);
@@ -128,22 +123,13 @@ export function ArticleCard({ article }: ArticleCardProps) {
         </Badge>
       </CardFooter>
 
-      {/* Action Buttons */}
-      <CardFooter className="flex flex-col sm:flex-row justify-between items-stretch gap-2 border-t pt-3">
-        <Button
-          onClick={handleViewDescription}
-          variant="secondary"
-          size="sm"
-          className="w-full sm:flex-1 transition-all hover:scale-105 text-xs sm:text-sm"
-        >
-          Details
-        </Button>
-
+      {/* Action Buttons - Always Side by Side */}
+      <CardFooter className="flex flex-row justify-between items-stretch gap-2 border-t pt-3">
         <Button
           onClick={handleViewSummary}
           variant="outline"
           size="sm"
-          className="w-full sm:flex-1 transition-all hover:scale-105 text-xs sm:text-sm"
+          className="flex-1 transition-all hover:scale-105 text-xs sm:text-sm"
         >
           Summary
         </Button>
@@ -151,7 +137,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         <Button
           asChild
           size="sm"
-          className="w-full sm:flex-1 transition-all hover:scale-105 text-xs sm:text-sm"
+          className="flex-1 transition-all hover:scale-105 text-xs sm:text-sm"
         >
           <a href={article.url} target="_blank" rel="noopener noreferrer">
             Read Full
