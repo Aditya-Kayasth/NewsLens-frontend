@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as api from "@/lib/api";
 import { ArticleCard } from "@/components/shared/ArticleCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SearchIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { SearchIcon, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { useAuthStore } from "@/lib/authStore";
+import { useRouter } from "next/navigation";
 
 function SearchSkeleton() {
   return (
@@ -20,15 +22,27 @@ function SearchSkeleton() {
 }
 
 export default function SearchPage() {
+  const { token, user } = useAuthStore();
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [isChecking, setIsChecking] = useState(true);
 
-  const { data, isLoading, error, isPlaceholderData } = useQuery({
+  // Protect route
+  useEffect(() => {
+    if (!token || !user) {
+      router.replace("/login");
+    } else {
+      setIsChecking(false);
+    }
+  }, [token, user, router]);
+
+  const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ["searchNews", submittedQuery, page],
     queryFn: () => api.searchNews(submittedQuery, page),
-    enabled: submittedQuery !== "",
-    placeholderData: (previousData) => previousData,
+    enabled: submittedQuery !== "" && !!token && !isChecking,
+    // Removed placeholderData
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -39,12 +53,21 @@ export default function SearchPage() {
     }
   };
 
+  // Show loading while checking auth
+  if (isChecking || !token || !user) {
+    return (
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
+        <SearchSkeleton />
+      </div>
+    );
+  }
+
   const totalPages = data ? Math.ceil(data.totalResults / 20) : 0;
   const hasNextPage = page < totalPages;
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8 w-full px-4">
+    <div className="space-y-8 pb-8 w-full px-4 relative">
       {/* Header Section */}
       <div className="space-y-6">
         <div className="text-center space-y-2">
@@ -79,6 +102,16 @@ export default function SearchPage() {
           </Button>
         </form>
       </div>
+
+      {/* Loading Overlay when fetching new page */}
+      {isFetching && submittedQuery && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <Card className="p-6 flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm font-medium">Loading page {page}...</p>
+          </Card>
+        </div>
+      )}
 
       {/* Results Section */}
       <div className="mt-8">
@@ -133,7 +166,7 @@ export default function SearchPage() {
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-8">
                     <Button
                       onClick={() => setPage((old) => Math.max(old - 1, 1))}
-                      disabled={!hasPrevPage || isPlaceholderData}
+                      disabled={!hasPrevPage || isFetching}
                       variant="outline"
                       size="default"
                       className="gap-2 w-full sm:w-auto"
@@ -150,7 +183,7 @@ export default function SearchPage() {
 
                     <Button
                       onClick={() => setPage((old) => old + 1)}
-                      disabled={!hasNextPage || isPlaceholderData}
+                      disabled={!hasNextPage || isFetching}
                       size="default"
                       className="gap-2 w-full sm:w-auto"
                     >

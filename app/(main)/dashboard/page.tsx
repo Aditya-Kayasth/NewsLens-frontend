@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/lib/authStore";
 import * as api from "@/lib/api";
@@ -8,7 +8,8 @@ import { ArticleCard } from "@/components/shared/ArticleCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Glasses, Settings, ChevronLeft, ChevronRight } from "lucide-react";
+import { Glasses, Settings, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function BriefingSkeleton() {
   return (
@@ -27,18 +28,38 @@ function BriefingSkeleton() {
 }
 
 export default function DashboardPage() {
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
+  const router = useRouter();
   const [page, setPage] = useState(1);
+  const [isChecking, setIsChecking] = useState(true);
 
-  const { data, isLoading, error, isPlaceholderData } = useQuery({
+  // Protect route - redirect if not authenticated
+  useEffect(() => {
+    if (!token || !user) {
+      router.replace("/login");
+    } else {
+      setIsChecking(false);
+    }
+  }, [token, user, router]);
+
+  const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ["dashboardNews", user?.email, page],
     queryFn: () => api.fetchNews(user!.email!, null, page),
-    enabled: !!user,
+    enabled: !!user && !!token && !isChecking,
     staleTime: 5 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
+    // Remove placeholderData to show loading state
   });
 
-  if (isLoading || !user) {
+  // Show loading while checking auth
+  if (isChecking || !token || !user) {
+    return (
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
+        <BriefingSkeleton />
+      </div>
+    );
+  }
+
+  if (isLoading) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
         <BriefingSkeleton />
@@ -117,7 +138,7 @@ export default function DashboardPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 pb-8 w-full">
+    <div className="space-y-8 pb-8 w-full relative">
       <div className="space-y-2 px-4">
         <h2 className="text-2xl md:text-4xl font-bold tracking-tight">
           Your Daily Briefing
@@ -126,6 +147,16 @@ export default function DashboardPage() {
           {data.totalResults} articles curated for you
         </p>
       </div>
+
+      {/* Loading Overlay when fetching new page */}
+      {isFetching && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <Card className="p-6 flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm font-medium">Loading page {page}...</p>
+          </Card>
+        </div>
+      )}
 
       <div className="w-full px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -140,7 +171,7 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4 px-4">
           <Button
             onClick={() => setPage((old) => Math.max(old - 1, 1))}
-            disabled={!hasPrevPage || isPlaceholderData}
+            disabled={!hasPrevPage || isFetching}
             variant="outline"
             size="default"
             className="gap-2 w-full sm:w-auto"
@@ -157,7 +188,7 @@ export default function DashboardPage() {
 
           <Button
             onClick={() => setPage((old) => old + 1)}
-            disabled={!hasNextPage || isPlaceholderData}
+            disabled={!hasNextPage || isFetching}
             size="default"
             className="gap-2 w-full sm:w-auto"
           >

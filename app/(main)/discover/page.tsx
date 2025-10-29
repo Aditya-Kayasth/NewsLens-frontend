@@ -7,7 +7,7 @@ import { ArticleCard } from "@/components/shared/ArticleCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BackendArticle } from "@/types";
-import { AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { AlertCircle, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
 function BriefingSkeleton() {
   return (
@@ -22,12 +22,12 @@ function BriefingSkeleton() {
 export default function DiscoverPage() {
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, error, isPlaceholderData } = useQuery({
+  const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ["topHeadlines", page],
     queryFn: () => api.fetchTopHeadlines(page),
-    placeholderData: (previousData) => previousData,
     staleTime: 5 * 60 * 1000,
     retry: 2,
+    // Removed placeholderData
   });
 
   if (isLoading) {
@@ -62,8 +62,8 @@ export default function DiscoverPage() {
               <p className="text-xs sm:text-sm text-muted-foreground">
                 {(error as Error).message}
               </p>
-              <Button 
-                onClick={() => window.location.reload()} 
+              <Button
+                onClick={() => window.location.reload()}
                 variant="outline"
                 size="sm"
                 className="mt-4"
@@ -97,15 +97,26 @@ export default function DiscoverPage() {
   const hasPrevPage = page > 1;
 
   return (
-    <div className="space-y-8 px-4">
+    <div className="space-y-8 px-4 relative">
       <div className="space-y-2">
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
           Discover: Top Headlines
         </h1>
         <p className="text-muted-foreground text-sm md:text-base">
-          Page {page} of {totalPages > 0 ? totalPages : 1} ({data.totalResults} results)
+          Page {page} of {totalPages > 0 ? totalPages : 1} ({data.totalResults}{" "}
+          results)
         </p>
       </div>
+
+      {/* Loading Overlay when fetching new page */}
+      {isFetching && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <Card className="p-6 flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm font-medium">Loading page {page}...</p>
+          </Card>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
         {data.articles.map((article: BackendArticle) => (
@@ -117,7 +128,7 @@ export default function DiscoverPage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4">
           <Button
             onClick={() => setPage((old) => Math.max(old - 1, 1))}
-            disabled={!hasPrevPage || isPlaceholderData}
+            disabled={!hasPrevPage || isFetching}
             variant="outline"
             size="default"
             className="gap-2 w-full sm:w-auto"
@@ -125,18 +136,18 @@ export default function DiscoverPage() {
             <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
-          
+
           <span className="text-sm text-muted-foreground whitespace-nowrap">
             Page {page} of {totalPages}
           </span>
-          
+
           <Button
             onClick={() => {
-              if (!isPlaceholderData && page < totalPages) {
+              if (page < totalPages) {
                 setPage((old) => old + 1);
               }
             }}
-            disabled={isPlaceholderData || !hasNextPage}
+            disabled={isFetching || !hasNextPage}
             size="default"
             className="gap-2 w-full sm:w-auto"
           >
